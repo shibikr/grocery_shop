@@ -1,0 +1,13 @@
+<h2>Show cart</h2>
+
+<ul>
+
+  <li>
+    <strong>Buyer:</strong>
+    <%= @cart.buyer_id %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: cart_path(@conn, :edit, @cart) %>
+<%= link "Back", to: cart_path(@conn, :index) %>

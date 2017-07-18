@@ -19,6 +19,8 @@ defmodule Groceryshop.Router do
     get "/", PageController, :index
     resources "/products", ProductController
     resources "/buyers", BuyerController
+    resources "/carts", CartController
+    resources "/cart_details", CartDetailController
   end
 
   # Other scopes may use custom stacks.

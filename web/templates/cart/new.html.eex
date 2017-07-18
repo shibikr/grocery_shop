@@ -1,0 +1,6 @@
+<h2>New cart</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: cart_path(@conn, :create) %>
+
+<%= link "Back", to: cart_path(@conn, :index) %>
