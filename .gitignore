@@ -92,3 +92,6 @@ _build/
 /rel
 
 # End of https://www.gitignore.io/api/node,erlang,elixir,phoenix
+
+.idea/
+*.iml
