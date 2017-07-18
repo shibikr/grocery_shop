@@ -1,0 +1,6 @@
+<h2>Edit buyer</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: buyer_path(@conn, :update, @buyer) %>
+
+<%= link "Back", to: buyer_path(@conn, :index) %>

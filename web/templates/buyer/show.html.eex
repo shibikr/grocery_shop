@@ -1,0 +1,18 @@
+<h2>Show buyer</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @buyer.name %>
+  </li>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @buyer.email %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: buyer_path(@conn, :edit, @buyer) %>
+<%= link "Back", to: buyer_path(@conn, :index) %>

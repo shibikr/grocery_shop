@@ -1,0 +1,28 @@
+<h2>Listing buyers</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for buyer <- @buyers do %>
+    <tr>
+      <td><%= buyer.name %></td>
+      <td><%= buyer.email %></td>
+
+      <td class="text-right">
+        <%= link "Show", to: buyer_path(@conn, :show, buyer), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: buyer_path(@conn, :edit, buyer), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: buyer_path(@conn, :delete, buyer), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New buyer", to: buyer_path(@conn, :new) %>
