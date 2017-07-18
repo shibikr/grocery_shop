@@ -15,4 +15,22 @@ defmodule Groceryshop.ProductTest do
     changeset = Product.changeset(%Product{}, @invalid_attrs)
     refute changeset.valid?
   end
+
+  test "product price should not be negative" do
+    changeset = Product.changeset(%Product{}, %{name: "product", price: "-20"})
+    refute changeset.valid?
+  end
+
+  test "product price can be zero" do
+    changeset = Product.changeset(%Product{}, %{name: "product", price: "0"})
+    refute changeset.valid?
+  end
+
+  # test "product name should be unique" do
+  #   changeset = Product.changeset(%Product{}, %{name: "product", price: "2"})
+  #   assert changeset.valid?
+  #   Repo.insert(changeset)
+  #   changeset = Product.changeset(%Product{}, %{name: "product", price: "4"})
+  #   refute changeset.valid?
+  # end
 end
