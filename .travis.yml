@@ -1,10 +1,21 @@
 language: elixir
 elixir:
   - 1.4.5
+
+addons:
+  postgresql: '9.6'
+
+services:
+  - postgresql
+
 env: MIX_ENV=test
+
 notifications:
   email: false
+
+before_script:
+  - mix do ecto.create, ecto.migrate
+
 script:
-  # - mix compile --warnings-as-errors
   - mix test
-  # - mix dogma
+  - mix coveralls.travis
