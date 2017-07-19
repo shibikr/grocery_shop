@@ -1,5 +1,5 @@
 # Groceryshop
-[![Coverage Status](https://coveralls.io/repos/github/shibikr/grocery_shop/badge.svg?branch=master)](https://coveralls.io/github/shibikr/grocery_shop?branch=master)
+[![Build Status](https://travis-ci.org/shibikr/grocery_shop.svg?branch=master)](https://travis-ci.org/shibikr/grocery_shop) [![Coverage Status](https://coveralls.io/repos/github/shibikr/grocery_shop/badge.svg?branch=master)](https://coveralls.io/github/shibikr/grocery_shop?branch=master) 
 
 To start your Phoenix app:
 
