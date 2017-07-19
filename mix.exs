@@ -11,7 +11,13 @@ defmodule Groceryshop.Mixfile do
      start_permanent: Mix.env == :prod,
      test_coverage: [tool: ExCoveralls],
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     preferred_cli_env: [
+                       coveralls: :test,
+                       "coveralls.detail": :test,
+                       "coveralls.html": :test,
+                       "coveralls.post": :test
+                     ]]
   end
 
   # Configuration for the OTP application.
@@ -39,7 +45,7 @@ defmodule Groceryshop.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:excoveralls, "~> 0.7", only: :test}]
+     {:excoveralls, "~> 0.7", only: :test, app: false}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
