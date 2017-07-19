@@ -33,7 +33,7 @@ defmodule Groceryshop.BuyerControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    buyer = Repo.insert! %Buyer{}
+    buyer = Repo.insert! Buyer.changeset(%Buyer{}, @valid_attrs)
     conn = get conn, buyer_path(conn, :show, buyer)
     assert html_response(conn, 200) =~ "Show buyer"
   end
@@ -45,26 +45,26 @@ defmodule Groceryshop.BuyerControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    buyer = Repo.insert! %Buyer{}
+    buyer = Repo.insert! Buyer.changeset(%Buyer{}, @valid_attrs)
     conn = get conn, buyer_path(conn, :edit, buyer)
     assert html_response(conn, 200) =~ "Edit buyer"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    buyer = Repo.insert! %Buyer{}
+    buyer = Repo.insert! Buyer.changeset(%Buyer{}, @valid_attrs)
     conn = put conn, buyer_path(conn, :update, buyer), buyer: @valid_attrs
     assert redirected_to(conn) == buyer_path(conn, :show, buyer)
     assert Repo.get_by(Buyer, @valid_attrs)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    buyer = Repo.insert! %Buyer{}
+    buyer = Repo.insert! Buyer.changeset(%Buyer{}, @valid_attrs)
     conn = put conn, buyer_path(conn, :update, buyer), buyer: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit buyer"
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    buyer = Repo.insert! %Buyer{}
+    buyer = Repo.insert! Buyer.changeset(%Buyer{}, @valid_attrs)
     conn = delete conn, buyer_path(conn, :delete, buyer)
     assert redirected_to(conn) == buyer_path(conn, :index)
     refute Repo.get(Buyer, buyer.id)
