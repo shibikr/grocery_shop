@@ -37,20 +37,6 @@ defmodule Groceryshop.CartController do
     render(conn, "edit.html", cart: cart, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "cart" => cart_params}) do
-    cart = Repo.get!(Cart, id)
-    changeset = Cart.changeset(cart, cart_params)
-
-    case Repo.update(changeset) do
-      {:ok, cart} ->
-        conn
-        |> put_flash(:info, "Cart updated successfully.")
-        |> redirect(to: cart_path(conn, :show, cart))
-      {:error, changeset} ->
-        render(conn, "edit.html", cart: cart, changeset: changeset)
-    end
-  end
-
   def delete(conn, %{"id" => id}) do
     cart = Repo.get!(Cart, id)
 
