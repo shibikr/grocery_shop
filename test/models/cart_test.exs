@@ -3,15 +3,15 @@ defmodule Groceryshop.CartTest do
 
   alias Groceryshop.Cart
 
-  @valid_attrs %{}
+  @valid_attrs %{buyer_id: 1234}
   @invalid_attrs %{}
 
-  test "changeset with valid attributes" do
+  test "changeset with valid buyer" do
     changeset = Cart.changeset(%Cart{}, @valid_attrs)
     assert changeset.valid?
   end
 
-  test "changeset with invalid attributes" do
+  test "changeset with invalid buyer" do
     changeset = Cart.changeset(%Cart{}, @invalid_attrs)
     refute changeset.valid?
   end

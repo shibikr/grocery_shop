@@ -3,7 +3,7 @@ defmodule Groceryshop.Repo.Migrations.CreateCart do
 
   def change do
     create table(:carts) do
-      add :buyer_id, references(:buyers, on_delete: :delete_all)
+      add :buyer_id, references(:buyers, on_delete: :delete_all), null: false
 
       timestamps()
     end

@@ -12,7 +12,7 @@ defmodule Groceryshop.Cart do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [])
-    |> validate_required([])
+    |> cast(params, [:buyer_id])
+    |> validate_required([:buyer_id])
   end
 end
