@@ -2,8 +2,8 @@ defmodule Groceryshop.ProductControllerTest do
   use Groceryshop.ConnCase
 
   alias Groceryshop.Product
-  @valid_attrs %{name: "some content", price: "120.5"}
-  @invalid_attrs %{}
+  @valid_attrs %{name: "some content", code: "ABCDE12345", price: 200}
+  @invalid_attrs %{name: "s", code: "", price: 120}
 
   test "lists all entries on index", %{conn: conn} do
     conn = get conn, product_path(conn, :index)
@@ -27,7 +27,7 @@ defmodule Groceryshop.ProductControllerTest do
   end
 
   test "shows chosen resource", %{conn: conn} do
-    product = Repo.insert! %Product{}
+    product = Repo.insert! Product.changeset(%Product{}, @valid_attrs)
     conn = get conn, product_path(conn, :show, product)
     assert html_response(conn, 200) =~ "Show product"
   end
@@ -39,26 +39,26 @@ defmodule Groceryshop.ProductControllerTest do
   end
 
   test "renders form for editing chosen resource", %{conn: conn} do
-    product = Repo.insert! %Product{}
+    product = Repo.insert! Product.changeset(%Product{}, @valid_attrs)
     conn = get conn, product_path(conn, :edit, product)
     assert html_response(conn, 200) =~ "Edit product"
   end
 
   test "updates chosen resource and redirects when data is valid", %{conn: conn} do
-    product = Repo.insert! %Product{}
+    product = Repo.insert! Product.changeset(%Product{}, @valid_attrs)
     conn = put conn, product_path(conn, :update, product), product: @valid_attrs
     assert redirected_to(conn) == product_path(conn, :show, product)
     assert Repo.get_by(Product, @valid_attrs)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn} do
-    product = Repo.insert! %Product{}
+    product = Repo.insert! Product.changeset(%Product{}, @valid_attrs)
     conn = put conn, product_path(conn, :update, product), product: @invalid_attrs
     assert html_response(conn, 200) =~ "Edit product"
   end
 
   test "deletes chosen resource", %{conn: conn} do
-    product = Repo.insert! %Product{}
+    product = Repo.insert! Product.changeset(%Product{}, @valid_attrs)
     conn = delete conn, product_path(conn, :delete, product)
     assert redirected_to(conn) == product_path(conn, :index)
     refute Repo.get(Product, product.id)
