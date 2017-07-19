@@ -1,4 +1,5 @@
 # Groceryshop
+[![Coverage Status](https://coveralls.io/repos/github/shibikr/grocery_shop/badge.svg?branch=master)](https://coveralls.io/github/shibikr/grocery_shop?branch=master)
 
 To start your Phoenix app:
 
