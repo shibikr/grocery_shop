@@ -9,8 +9,8 @@ defmodule Groceryshop.Repo.Migrations.CreateProduct do
 
       timestamps()
     end
-    #    TODO: [Prasun] case insensitive where clause for constraints
-    unique_index(:products, :code)
+
+    create unique_index(:products, ["lower(code)"])
 
   end
 end
