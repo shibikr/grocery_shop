@@ -1,0 +1,10 @@
+language: elixir
+elixir:
+  - 1.4.5
+env: MIX_ENV=test
+notifications:
+  email: false
+script:
+  # - mix compile --warnings-as-errors
+  - mix test
+  # - mix dogma
