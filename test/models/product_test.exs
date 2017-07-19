@@ -3,12 +3,30 @@ defmodule Groceryshop.ProductTest do
 
   alias Groceryshop.Product
 
-  @valid_attrs %{name: "some content", price: "120.5"}
+  @valid_attrs %{name: "some content", code: "ABC1234567", price: "120.5"}
+  @attrs_with_invalid_code %{name: "some content", code: "ABC567", price: "120.5"}
+  @attrs_with_invalid_name %{name: "", code: "ABC567", price: "120.5"}
+  @attrs_with_invalid_price %{name: "", code: "ABC567", price: "10000000"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
     changeset = Product.changeset(%Product{}, @valid_attrs)
     assert changeset.valid?
+  end
+
+  test "changeset with invalid code" do
+    changeset = Product.changeset(%Product{},@attrs_with_invalid_code)
+    refute changeset.valid?
+  end
+
+  test "changeset with name as empty string" do
+    changeset = Product.changeset(%Product{},@attrs_with_invalid_name)
+    refute changeset.valid?
+  end
+
+  test "changeset with invalid price" do
+    changeset = Product.changeset(%Product{},@attrs_with_invalid_price)
+    refute changeset.valid?
   end
 
   test "changeset with invalid attributes" do
