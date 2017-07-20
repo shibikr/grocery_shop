@@ -1,0 +1,90 @@
+---
+- name: Install latest nodejs
+  apt: name={{item}} state=present
+  become: true
+  become_method: sudo
+  with_items:
+     - nodejs
+     - npm
+     - unzip
+     - gcc
+     - g++
+     - python-dev
+     - python-apt
+     - make
+     - libtool
+     - build-essential
+
+- name: Install npm packages
+  become: true
+  become_user: root
+  become_method: sudo
+  raw: "npm install"
+
+- name: remove asdf folder
+  file:
+    path: ~/.asdf
+    state: absent
+
+- name: clone asdf-vm/asdf.git
+  git:
+    repo: https://github.com/asdf-vm/asdf.git
+    dest: ~/.asdf
+    version: v0.3.0
+
+- name: Now add the specific plugins for asdf erlang
+  raw: "/home/vagrant/.asdf/bin/asdf plugin-add {{item}} https://github.com/asdf-vm/asdf-{{item}}.git"
+  with_items:
+    - erlang
+    - elixir
+  args:
+    executable: /bin/bash
+
+- name: Install the softwares through asdf erlang 20.0 & elixir 1.4.5
+  raw: "/home/vagrant/.asdf/bin/asdf install {{item}}"
+  with_items:
+    - "erlang 20.0"
+    - "elixir 1.4.5"
+
+- name:  global erlang 20.0 & elixir 1.4.5
+  raw: "/home/vagrant/.asdf/bin/asdf global {{item}}"
+  with_items:
+    - "erlang 20.0"
+    - "elixir 1.4.5"
+
+- name:  Enabling history for iex shell
+  shell: |
+    mkdir -p tmp
+    cd tmp
+    git clone https://github.com/ferd/erlang-history.git
+    cd erlang-history
+    sudo make install
+    cd ../..
+    rm -rf tmp/erlang-history
+
+- name: Install phoenix-framework
+  raw: "/home/vagrant/.asdf/shims/mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force"
+
+#
+# # - name: register asdf installable path
+# #   shell: which asdf
+# #   register: asdf_path
+# #   args:
+# #     executable: /bin/bash
+#
+# #- name: "source asdf in bashrc"
+# #lineinfile: dest="~/.bashrc" create=yes line="source ~/.asdf/asdf.sh"
+#
+
+#
+# #TODO: Jai-Gopi Need to Indendify Solution
+# # - name:  The following commands to verify the versions installed -  elixir
+# #   raw: asdf list elixir
+# #   args:
+# #     chdir: $HOME
+# #
+# # - name: The following commands to verify the versions installed - erlang
+# #   raw: asdf list erlang
+# #   args:
+# #     chdir: $HOME
+# #

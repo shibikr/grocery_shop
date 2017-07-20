@@ -1,0 +1,8 @@
+---
+- name: Install RecruitX Backend
+  hosts: local
+  #become: yes
+  #become_method: sudo
+
+  roles:
+    - elixir

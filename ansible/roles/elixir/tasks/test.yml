@@ -1,0 +1,74 @@
+---
+  - name: Update repositories cache and install "foo" package
+    apt:
+      name: foo
+      update_cache: yes
+- name: Install latest nodejs
+  aptitude: name={{item}} state=present
+  with_items:
+    - nodejs
+    - gcc-c++
+    - make
+
+- name: Install npm packages
+  command: "npm install"
+  args:
+    chdir: $HOME
+
+- name: Install asdf
+  raw: rm -rf ~/.asdf && git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
+  args:
+    chdir: $HOME
+
+- name: bash_profile
+  raw: echo -e '\n. ~/.asdf/asdf.sh' >> ~/.bash_profile
+  args:
+    chdir: $HOME
+
+- name: Now add the specific plugins for asdf erlang
+  raw: asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
+  args:
+    chdir: $HOME
+
+- name: Now add the specific plugins for asdf elixir
+  raw: asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+  args:
+    chdir: $HOME
+
+- name: Check the asdf plugin-list
+  raw: asdf plugin-list
+  args:
+    chdir: $HOME
+
+- name: Install the softwares through asdf erlang 20.0
+  raw: asdf install erlang 20.0
+  args:
+    chdir: $HOME
+
+- name:  global erlang 20.0
+  raw: asdf global erlang 20.0
+  args:
+    chdir: $HOME
+
+- name: Install the softwares through asdf elixir  1.4.5
+  raw: asdf install elixir  1.4.5
+  args:
+    chdir: $HOME
+
+- name:  global elixir 1.4.5
+  raw: asdf global elixir 1.4.5
+  args:
+    chdir: $HOME
+
+- name:  The following commands to verify the versions installed -  elixir
+  raw: asdf list elixir
+  args:
+    chdir: $HOME
+
+- name: The following commands to verify the versions installed - erlang
+  raw: asdf list erlang
+  args:
+    chdir: $HOME
+
+- name: create directory tmp
+  file: path=$HOME/tmp state=directory
