@@ -3,23 +3,26 @@
   apt: name={{item}} state=present
   become: true
   become_method: sudo
+  tags: start
   with_items:
-     - nodejs
-     - npm
-     - unzip
-     - gcc
-     - g++
-     - python-dev
-     - python-apt
-     - make
-     - libtool
-     - build-essential
+    - nodejs
+    - npm
+    - unzip
+    - gcc
+    - g++
+    - postgresql
+    - python-dev
+    - python-apt
+    - make
+    - libtool
+    - build-essential
+    - python-pexpect
 
-- name: Install npm packages
-  become: true
-  become_user: root
-  become_method: sudo
-  raw: "npm install"
+# - name: Install npm packages
+#   become: true
+#   #become_user: root
+#   become_method: sudo
+#   raw: "npm install"
 
 - name: remove asdf folder
   file:
@@ -33,7 +36,7 @@
     version: v0.3.0
 
 - name: Now add the specific plugins for asdf erlang
-  raw: "/home/vagrant/.asdf/bin/asdf plugin-add {{item}} https://github.com/asdf-vm/asdf-{{item}}.git"
+  raw: "bash -ic 'asdf plugin-add {{ item }} https://github.com/asdf-vm/asdf-{{ item }}.git'"
   with_items:
     - erlang
     - elixir
@@ -41,31 +44,87 @@
     executable: /bin/bash
 
 - name: Install the softwares through asdf erlang 20.0 & elixir 1.4.5
-  raw: "/home/vagrant/.asdf/bin/asdf install {{item}}"
+  raw: "bash -ic 'asdf {{ item }}'"
   with_items:
-    - "erlang 20.0"
-    - "elixir 1.4.5"
+    - "install erlang {{ erlang_version }}"
+    - "install elixir {{ elixir_version }}"
+    - "global erlang {{ erlang_version }}"
+    - "global elixir {{ elixir_version }}"
 
-- name:  global erlang 20.0 & elixir 1.4.5
-  raw: "/home/vagrant/.asdf/bin/asdf global {{item}}"
-  with_items:
-    - "erlang 20.0"
-    - "elixir 1.4.5"
+- name: Create tmp directory for erlang-history
+  file: name=tmp state=directory mode=0777
+  tags: test
 
-- name:  Enabling history for iex shell
-  shell: |
-    mkdir -p tmp
-    cd tmp
-    git clone https://github.com/ferd/erlang-history.git
-    cd erlang-history
-    sudo make install
-    cd ../..
-    rm -rf tmp/erlang-history
+- name: git erlang-history
+  git:
+    repo: https://github.com/ferd/erlang-history.git
+    dest: ~/tmp/erlang-history
+  tags: test
+
+- name: erlang-history make install
+  command: "/home/vagrant/tmp/erlang-history/ make install"
+  tags: test
+  become: true
+  become_method: sudo
+  #become_user: vagrant
+
+- name: remove tmp & erlang-history directory
+  file: name=tmp state=absent
+  tags: test
+
+# - name:  Enabling history for iex shell
+#   shell: |
+#     mkdir -p tmp
+#     cd tmp
+#     git clone https://github.com/ferd/erlang-history.git
+#     cd erlang-history
+#     sudo make install
+#     cd ../..
+#     rm -rf tmp/erlang-history
 
 - name: Install phoenix-framework
-  raw: "/home/vagrant/.asdf/shims/mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force"
+  raw: "bash -ic 'mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force'"
 
+- name: mix create project app
+  #expect:
+  command: "bash -ic 'mix phoenix.new /home/vagrant/hello_world --no-brunch'"
+    # responses:
+    #   (*)dependencies(*): "Y"
+
+- name: install local hex
+  command: "bash -ic 'mix local.hex --force'"
+  args:
+    chdir: ~/hello_world
+
+- name: install mix deps
+  command: "bash -ic 'mix deps.get --force'"
+  args:
+    chdir: ~/hello_world
+
+- name: install local_rebar
+  command: "bash -ic 'mix local.rebar --force'"
+  args:
+    chdir: ~/hello_world
+
+#[TODO] replace command with ansible script
+#- name: create vagarant role
 #
+#
+- name: create vagarant role
+  command: psql -U postgres -h localhost -c "CREATE ROLE \"vagrant\" LOGIN CREATEDB;"
+
+
+
+- name: Create db
+  command: "bash -ic 'mix ecto.create'"
+  args:
+    chdir: ~/hello_world
+
+- name: Start phoenix server
+  command: "bash -ic 'mix phoenix.server'"
+  args:
+    chdir: ~/hello_world
+
 # # - name: register asdf installable path
 # #   shell: which asdf
 # #   register: asdf_path
