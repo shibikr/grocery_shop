@@ -17,113 +17,119 @@
     - libtool
     - build-essential
     - python-pexpect
-
-# - name: Install npm packages
-#   become: true
-#   #become_user: root
-#   become_method: sudo
-#   raw: "npm install"
+  tags: one
 
 - name: remove asdf folder
   file:
     path: ~/.asdf
     state: absent
+  tags: two
 
 - name: clone asdf-vm/asdf.git
   git:
     repo: https://github.com/asdf-vm/asdf.git
     dest: ~/.asdf
-    version: v0.3.0
+    version: "{{ asdf_vm_git_version }}"
+  tags: two
+
+- name: "source asdf in bashrc"
+  lineinfile: dest="~/.bash_profile" create=yes line="source ~/.asdf/asdf.sh"
 
 - name: Now add the specific plugins for asdf erlang
-  raw: "bash -ic 'asdf plugin-add {{ item }} https://github.com/asdf-vm/asdf-{{ item }}.git'"
+  raw: "bash -ilc 'asdf plugin-add {{ item }} https://github.com/asdf-vm/asdf-{{ item }}.git'"
   with_items:
     - erlang
     - elixir
   args:
+    chdir: ~/home/vagrant
     executable: /bin/bash
+  tags: three
 
 - name: Install the softwares through asdf erlang 20.0 & elixir 1.4.5
-  raw: "bash -ic 'asdf {{ item }}'"
+  raw: "bash -ilc 'asdf {{ item }}'"
   with_items:
     - "install erlang {{ erlang_version }}"
     - "install elixir {{ elixir_version }}"
     - "global erlang {{ erlang_version }}"
     - "global elixir {{ elixir_version }}"
-
-- name: Create tmp directory for erlang-history
-  file: name=tmp state=directory mode=0777
-  tags: test
-
-- name: git erlang-history
-  git:
-    repo: https://github.com/ferd/erlang-history.git
-    dest: ~/tmp/erlang-history
-  tags: test
-
-- name: erlang-history make install
-  command: "/home/vagrant/tmp/erlang-history/ make install"
-  tags: test
-  become: true
-  become_method: sudo
-  #become_user: vagrant
-
-- name: remove tmp & erlang-history directory
-  file: name=tmp state=absent
-  tags: test
-
-# - name:  Enabling history for iex shell
-#   shell: |
-#     mkdir -p tmp
-#     cd tmp
-#     git clone https://github.com/ferd/erlang-history.git
-#     cd erlang-history
-#     sudo make install
-#     cd ../..
-#     rm -rf tmp/erlang-history
+  tags: three
+###TODO Pending - write Ansible version
+# - name: Create tmp directory for erlang-history
+#   file: name=tmp state=directory mode=0777
+#   tags: test
+#
+# - name: git erlang-history
+#   git:
+#     repo: https://github.com/ferd/erlang-history.git
+#     dest: ~/tmp/erlang-history
+#   tags: test
+#
+# - name: erlang-history make install
+#   raw: "/home/vagrant/tmp/erlang-history/ make install"
+#   become: true
+#   become_method: sudo
+#   become_user: vagrant
+#   tags: test
+#
+# - name: remove tmp & erlang-history directory
+#   file: name=tmp state=absent
+#   tags: test
+###
+- name:  Enabling history for iex shell
+  shell: |
+    mkdir -p tmp
+    cd tmp
+    git clone https://github.com/ferd/erlang-history.git
+    cd erlang-history && "make install"
+    cd ../..
+    rm -rf tmp/erlang-history
+    #tags: four
 
 - name: Install phoenix-framework
-  raw: "bash -ic 'mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force'"
+  raw: "bash -ilc 'mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force'"
+  tags: five
 
-- name: mix create project app
-  #expect:
-  command: "bash -ic 'mix phoenix.new /home/vagrant/hello_world --no-brunch'"
-    # responses:
-    #   (*)dependencies(*): "Y"
+- name: mix create project app # if this folder exits files here
+  command: "bash -ilc 'mix phoenix.new /home/vagrant/hello_world --no-brunch'"
+  tags: five
 
 - name: install local hex
-  command: "bash -ic 'mix local.hex --force'"
+  command: "bash -ilc 'mix local.hex --force'"
   args:
     chdir: ~/hello_world
+  tags: five
 
 - name: install mix deps
-  command: "bash -ic 'mix deps.get --force'"
+  command: "bash -ilc 'mix deps.get --force'"
   args:
     chdir: ~/hello_world
+  tags: five
 
 - name: install local_rebar
-  command: "bash -ic 'mix local.rebar --force'"
+  command: "bash -ilc 'mix local.rebar --force'"
   args:
     chdir: ~/hello_world
+  tags: five
 
-#[TODO] replace command with ansible script
-#- name: create vagarant role
-#
+#- name: Template dev.exs for database info
+#  template: src=dev.exs dest=/home/vagrant/hello_world/config/
+#[TODO] replace "create vagarant role" command with ansible script
 #
 - name: create vagarant role
-  command: psql -U postgres -h localhost -c "CREATE ROLE \"vagrant\" LOGIN CREATEDB;"
-
-
+  command: psql -U postgres -c "CREATE ROLE \"vagrant1\" LOGIN CREATEDB;"
+  tags: six
 
 - name: Create db
-  command: "bash -ic 'mix ecto.create'"
+  command: "bash -ilc 'mix ecto.create'"
   args:
     chdir: ~/hello_world
+  tags: six
 
 - name: Start phoenix server
-  command: "bash -ic 'mix phoenix.server'"
+  command: "bash -ilc 'mix phoenix.server'"
   args:
     chdir: ~/hello_world
+  tags: six
 
 # # - name: register asdf installable path
 # #   shell: which asdf

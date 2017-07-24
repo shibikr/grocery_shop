@@ -1,6 +1,7 @@
 ---
 # vars file for groceryshop
-bash_profile: ~/.bash_profile
-bash_rc: ~/.bashrc
+#bash_profile: ~/.bash_profile
+#bash_rc: ~/.bashrc
 erlang_version: 20.0
 elixir_version: 1.4.5
+asdf_vm_git_version: v0.3.0

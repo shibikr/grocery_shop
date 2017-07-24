@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :groceryshop, Groceryshop.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "gopinath",
+  password: "KARUR@123gopinatj",
   database: "groceryshop_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
