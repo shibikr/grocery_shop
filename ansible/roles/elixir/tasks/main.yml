@@ -116,7 +116,7 @@
 #[TODO] replace "create vagarant role" command with ansible script
 #
 - name: create vagarant role
-  command: psql -U postgres -c "CREATE ROLE \"vagrant1\" LOGIN CREATEDB;"
+  command: psql -U postgres -c "CREATE ROLE \"vagrant\" LOGIN CREATEDB;"
   tags: six
 
 - name: Create db
