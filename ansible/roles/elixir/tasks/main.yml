@@ -5,6 +5,7 @@
   become_method: sudo
   tags: start
   with_items:
+    - git
     - nodejs
     - npm
     - unzip
@@ -36,17 +37,17 @@
   lineinfile: dest="~/.bash_profile" create=yes line="source ~/.asdf/asdf.sh"
 
 - name: Now add the specific plugins for asdf erlang
-  raw: "bash -ilc 'asdf plugin-add {{ item }} https://github.com/asdf-vm/asdf-{{ item }}.git'"
+  command: "bash -ilc 'asdf plugin-add {{ item }} https://github.com/asdf-vm/asdf-{{ item }}.git'"
   with_items:
     - erlang
     - elixir
   args:
-    chdir: ~/home/vagrant
+    chdir: /home/vagrant
     executable: /bin/bash
   tags: three
 
 - name: Install the softwares through asdf erlang 20.0 & elixir 1.4.5
-  raw: "bash -ilc 'asdf {{ item }}'"
+  command: "bash -ilc 'asdf {{ item }}'"
   with_items:
     - "install erlang {{ erlang_version }}"
     - "install elixir {{ elixir_version }}"
@@ -111,8 +112,13 @@
     chdir: ~/hello_world
   tags: five
 
-#- name: Template dev.exs for database info
-#  template: src=dev.exs dest=/home/vagrant/hello_world/config/
+- name: Template dev.exs for database info
+  template: src=dev.exs dest=/home/vagrant/hello_world/config/
+
+- name: Template pghda.conf file for postgres
+  template: src=pg_hda.conf dest=/etc/postgresql/9.5/main
+  become: true
+  become_method: sudo
 #[TODO] replace "create vagarant role" command with ansible script
 #
 - name: create vagarant role
